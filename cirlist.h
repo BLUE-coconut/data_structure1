@@ -2,8 +2,9 @@
 #include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
+//循环链表
 
-class CircularStack
+class Circular_chain_List
 {
 private:
 	const int INITSPACE = 10;
@@ -16,7 +17,7 @@ private:
 
 public:
 	SN* dummyhead = (SN*)malloc(sizeof(SN));
-	CircularStack()
+	Circular_chain_List()
 	{
 		SN* first = (SN*)malloc(sizeof(SN));
 		dummyhead->data = 0;
@@ -45,7 +46,7 @@ public:
 		}
 		printf("\n");
 	}
-	void TurnAround()
+	void TurnAround()//就地逆置
 	{
 		SN* pre = dummyhead->next;
 		SN* nex = dummyhead->next->next;

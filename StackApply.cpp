@@ -1,9 +1,10 @@
+#pragma once
 #include<iostream>
 #include<stdio.h>
 #include<vector>
 #include<algorithm>
 #include"sqstack.h"
-#include"cirstack.h"
+#include"cirlist.h"
 using namespace std;
 const int N = 12;
 
@@ -203,7 +204,7 @@ void line_editor(char input[])//行编辑器(#表示退格，@表示清空，=表示运算)
 }
 
 
-/*编辑器
+/*简单的编辑器
 int main()
 {
 	char hhlstr[30];

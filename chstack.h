@@ -1,7 +1,9 @@
+#pragma once
 #include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
 
+//Á´Ê½½á¹¹Õ»
 class ChStack_int
 {
 private:

@@ -2,8 +2,10 @@
 #include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
+#include"chlist.h"
+
 const int FixMAXSPACE = 100;
-//以下两种都是顺序存储（一个定长，一个动态）
+//以下两种都是顺序存储（一个定长，一个动态），好处是定位方便
 class FixString
 {
 private:
@@ -67,6 +69,7 @@ class DynamicString
 {
 private:
 	const int INITSPACE = 100;
+	const int INCREMENT = 50;
 	struct charnode
 	{
 		char* cn;
@@ -78,12 +81,17 @@ public:
 	DynamicString()
 	{
 		dummyhead->cn = (char*)malloc(sizeof(char)*INITSPACE);
-		dummyhead->len = 0;
-		dummyhead->space = INITSPACE;
+		dummyhead->len = 0;//字符串实际长度
+		dummyhead->space = INITSPACE;//字符串现有空间
 	}
-	void StrAssign(char p[])
+	void StrAssign(char p[])//输入初始字符串
 	{
 		dummyhead->len = strlen(p);
+		while (dummyhead->len > dummyhead->space)
+		{
+			dummyhead->space += INCREMENT;
+			dummyhead->cn = (char*)realloc(dummyhead->cn, sizeof(char) * dummyhead->space);
+		}
 		for (int i = 0;i< strlen(p); i++)
 		{
 			*(dummyhead->cn+i) = p[i];
@@ -108,28 +116,34 @@ public:
 	}
 	void Concat(char p[])
 	{
-		int size = StrLength();
-		if (strlen(p) + size > dummyhead->space)
+		int size = StrLength();//concat前字符串长度
+		dummyhead->len += strlen(p);
+		while (dummyhead->len >= dummyhead->space)
 		{
-			dummyhead->space += size;
+			dummyhead->space += INCREMENT;
 			dummyhead->cn = (char*)realloc(dummyhead->cn,sizeof(char) * dummyhead->space);
 		}
 		for (int i = 0; i < strlen(p); i++)
 		{
-			++size;
 			*(dummyhead->cn+size) = p[i];
+			size++;
 		}
-		dummyhead->len = size;
+		printf("concat successful\n");
 	}
-	char* subStr(int pos, int len)
+	char* subStr(int pos, int len)//从索引为pos的字符截取len个字符
 	{
 		char* sub;
 		int tail = pos + len;
-		if (pos + len > dummyhead->space)tail = dummyhead->space;//超出字符串长度，则截取到字符串尾
+		if (pos + len >= dummyhead->len)
+		{
+			tail = dummyhead->len;//超出字符串长度，则截取到字符串尾
+			printf("substring get to the tail ,len: %d\n", tail- pos);
+		}
 		for (int i = pos; i < tail; i++)
 		{
-			sub = dummyhead->cn+i;
+			*(sub + i) = *(dummyhead->cn+i);
 		}
+		printf("get substring successfully\n");
 		return sub;
 	}
 	void clear()//只清空内容
@@ -140,9 +154,10 @@ public:
 		}
 		dummyhead->len = 0;
 	}
-	void destroy()
+	void destroy()//释放空间
 	{
 		free(dummyhead->cn);
 		free(dummyhead);
 	}
 };
+

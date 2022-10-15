@@ -1,7 +1,9 @@
-﻿#include<iostream>
+﻿#pragma once
+#include<iostream>
 #include<stdio.h>
 #include<stdlib.h>
 #include <string.h>
+#include"chlist.h"
 
 int readline(FILE* fp)//每次读一行
 {
@@ -20,6 +22,7 @@ int readline(FILE* fp)//每次读一行
     }
     return 1;
 }
+
 
 class active_block
 {

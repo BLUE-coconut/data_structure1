@@ -47,7 +47,7 @@
     <ClInclude Include="hhl_string.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="cirstack.h">
+    <ClInclude Include="cirlist.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="chlist.h">
