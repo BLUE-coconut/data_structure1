@@ -70,7 +70,6 @@ public:
 		printf("%d\n", newp->data);
 		//printf("%p\n%p",newp,p);
 		p->next = newp;
-		printf("ok2");
 		len++;
 		printf("Add successfully\n");
 		return true;
@@ -302,7 +301,6 @@ public:
 		printf("%d\n", newp->data);
 		//printf("%p\n%p",newp,p);
 		p->next = newp;
-		printf("ok2");
 		len++;
 		printf("Add successfully\n");
 		return true;

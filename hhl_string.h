@@ -161,3 +161,84 @@ public:
 	}
 };
 
+//链式存储(动态)：可以直接用chlist中的 LinkList_char（字符类链表）来实现，好处是插入、删除操作方便
+class Dynamic_chain_String : public LinkList_char
+{
+public:
+	bool create(char init_string[])
+	{
+		if (len == 0)
+		{
+			printf("create successfully\n");
+		}
+		else
+		{
+			printf("String already exist.Concat successfully\n");
+		}
+		for (int i = 0; i < strlen(init_string); i++)
+		{
+			Add(init_string[i]);
+		}
+	}
+	void concat_string(char add_string[])
+	{
+		for (int i = 0; i < strlen(add_string); i++)
+		{
+			Add(add_string[i]);
+		}
+		printf("Concat successfully.\n");
+	}
+	bool insert_string(int pos, char insert_string[])//在索引pos后，插入串insert_string
+	{
+		LN* p = dummyhead;
+		for (int i = 0; i <= pos; i++)//找到索引为pos的指针位置
+		{
+			p = p->next;
+			if (p == NULL)
+			{
+				printf("cannot find pos\n");
+				return false;
+			}
+		}
+		LN* latter = p->next;
+		for (int i = 0; i < strlen(insert_string); i++)
+		{
+			LN* newp = new LN(insert_string[i]);
+			p->next = newp;
+			p = p->next;
+		}
+		p->next = latter;
+		printf("find pos and insert successfully\n");
+		return true;
+	}
+	bool del_string(int pos ,int len)//要删除从索引pos开始，长度为len的子串
+	{
+		int tail = pos + len;
+		if (tail > len)
+		{
+			tail = len;
+			printf("del substring len %d to the tail\n", len - pos);
+		}
+		LN* p = dummyhead;
+		for (int i = 0; i < pos; i++)//找到索引为pos的前一个
+		{
+			p = p->next;
+			if (p == NULL)
+			{
+				printf("cannot find pos\n");
+				return false;
+			}
+		}
+		
+		for (int i = pos; i < tail; i++)
+		{
+			LN* del_p = p->next;
+			p->next = del_p->next;
+			free(del_p);
+		}
+		printf("find pos and del successfully\n");
+		return true;
+	}
+
+
+};
