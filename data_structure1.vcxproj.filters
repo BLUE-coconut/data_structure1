@@ -42,6 +42,9 @@
     <ClCompile Include="Editor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="HuffManCoding.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hhl_string.h">

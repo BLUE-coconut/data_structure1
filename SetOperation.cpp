@@ -3,17 +3,38 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include"chlist.h"
+#include<queue>
+using namespace std;
+
 class hhlSet :public LinkList_char
 {
 private :
 	char name;
+	char* S;
+	int dict_len = 0;
+	void get_S()
+	{
+		printf("输入全集大小n（输入0则全集设为默认——26个小写字母）：\n");
+		scanf_s("%d",&dict_len);
+		if (dict_len > 0)
+		{
+			printf("输入全集：\n");
+			scanf_s("%s", S);
+		}
+		else//默认
+		{
+			char x[] = "abcdefghijklmnopqrstuvwxyz";
+			S = x;
+		}
+		
+	}
 public :
 	hhlSet(char set_name)//子类定义了构造函数，先执行父类，再执行子类
 	{
 		name = set_name;
-
+		get_S();
 	}
-	void set_add_element(eletype ch)
+	void set_add_element(eletype ch)//集合的构建是是有序的（按字典序）
 	{
 		LN* pre = dummyhead;
 		LN* p = dummyhead->next;
@@ -140,6 +161,39 @@ public :
 				}
 			}
 		}
+		else if (op == 'U')//默认集合内的元素符合在全集内
+		{
+			LN* cur = dummyhead->next;
+			int i = 0;
+			queue<char> U_res;
+			for (; i < dict_len; i++)
+			{
+				if (!cur ||*(S + i) != cur->data)
+				{
+					U_res.push(*(S + i));
+				}
+				else
+				{
+					cur = cur->next;
+				}
+			}
+			if (U_res.empty())
+			{
+				printf("补集为空\n");
+			}
+			else
+			{
+				while (!U_res.empty())
+				{
+					char out = U_res.front();
+					printf("%c ", out);
+					U_res.pop();
+				}
+				printf("\n");
+			}
+			
+			
+		}
 		else
 		{
 			printf("operate erro");
@@ -158,7 +212,7 @@ public :
 		return ans;
 	}
 
-	int relation(LN* setB)
+	int relation(LN* setB)//集合关系
 	{
 		// A包含B = 2、A包含于B = 1、AB相等 = 0、AB没特定关系 = -1
 		LN* pa = dummyhead;
@@ -233,14 +287,29 @@ public :
 
 	}
 
+	int relation_ele(char ele)//集合与元素的关系
+	{
+		LN* head = dummyhead;
+		while (head->next)
+		{
+			if (head->next->data == ele)//元素属于当前集合
+			{
+				return 1;
+			}
+			head = head->next;
+		}
+		return 0;
+	}
+
 	void help()
 	{
-		printf("& 表示求交集\n | 表示求并集\n - 表示求差集\n");
+		printf(" & 表示求交集\n | 表示求并集\n - 表示求差集\n U 表示求补集\n");
 	}
 };
 
 
-/*int main()
+/*
+int main()
 {
 	char setA[30],setB[30];
 	printf("setA=");
@@ -261,6 +330,7 @@ public :
 	op=getchar();
 	A.calculate(B.dummyhead,op);
 	A.relation(B.dummyhead);
-	A.destroy()
+	A.destroy();
+	B.destroy();
 	return 0;
 }*/

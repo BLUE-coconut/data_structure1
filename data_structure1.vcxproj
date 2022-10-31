@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="chstack.h" />
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="HuffManCoding.cpp" />
     <ClCompile Include="Mazz.cpp" />
     <ClCompile Include="MonsterLanguage.cpp" />
     <ClCompile Include="PolyFunction.cpp" />

@@ -30,7 +30,6 @@ class Editor_String
 {
 private:
     typedef char eletype;
-public:
     typedef struct LinkNode    //使用链表实现
     {
         eletype data;
@@ -47,7 +46,7 @@ public:
         int line_len;
         LN* Lhead;
         header* next;
-        header() :line_len(0), Lhead(NULL),next(NULL){};
+        header() :line_len(0), Lhead(NULL), next(NULL) {};
         header(int l, LN* Lhead) :line_len(l), Lhead(Lhead), next(NULL) {};
         header(int l, LN* Lhead, header* nx) :line_len(l), Lhead(Lhead), next(nx) {};
 
@@ -56,6 +55,7 @@ public:
     header* cur_show = dummy_of_header;//当前展示的页面第一行的行首的前驱
     int cur_id = 0;//当前展示的页面第一行的行号
 
+public:
     void insert_line(int line_id,char in_string[])//是否合法在activate_block中进行判断(插在)
     {
         header *p = dummy_of_header;
@@ -275,6 +275,10 @@ public:
         }
     }
 
+    int length()
+    {
+        return len;
+    }
 };
 
 
@@ -317,7 +321,7 @@ public:
         int t = MAX_LINE - 20;
         while (t--)//（尽可能多地读入，每次不超过MAX_LINE-20）
         {
-            if (active.len >= MAX_LINE)//是否超出活区最大行数
+            if (active.length() >= MAX_LINE)//是否超出活区最大行数
             {
                 active.out_line(fp_out);
                 printf("超出活区space,输出活区顶部行\n");
@@ -342,7 +346,7 @@ public:
 
     void insert_line(int id,char in_string[])//行插入
     {
-        if (active.len == MAX_LINE)
+        if (active.length() == MAX_LINE)
         {
             active.out_line(fp_out);
         }
@@ -398,7 +402,7 @@ void get_op(int *op)
     printf("输入操作编号（0-3）:\n");
     scanf_s("%d", op);
 }
-
+/*
 int main()
 {
     //文件打开
@@ -501,4 +505,4 @@ int main()
     fclose(fp2);     //文件关闭
 
     return 0;
-}
+}*/

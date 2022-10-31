@@ -6,9 +6,11 @@
 #include"sqqueue.h"
 class Monster
 {
-public:
+private:
 	SqStack_char monster;
 	SqQueue_char ans;
+public:
+
 	void create(char mstr[])
 	{
 		for (int i = strlen(mstr) - 1; i >= 0; i--)
