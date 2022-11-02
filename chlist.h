@@ -255,6 +255,7 @@ public:
 	LinkList_char()//构造函数，类对象构建时自动调用 
 	//对实例化的对象属性进行初始化 
 	{
+		//printf("init");
 		dummyhead = new LN();//使用new进行分配 
 		len = 0;
 	}
