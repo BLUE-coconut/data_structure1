@@ -171,10 +171,11 @@ public:
 	void calculate(LN* funB,char op)
 	{
 		LN* ans = copy();
-		LN* pa = ans;
-		LN* pb = funB;
+		
 		if (op == '+')
 		{
+			LN* pa = ans;
+			LN* pb = funB;
 			while (pa->next && pb->next)
 			{
 				if (pa->next->exp > pb->next->exp)
@@ -182,6 +183,7 @@ public:
 					LN* pnew = new LN(pb->next->exp, pb->next->coe);
 					pnew->next = pa->next;
 					pa->next = pnew;
+					pb = pb->next;
 				}
 				else if (pa->next->exp == pb->next->exp)
 				{
@@ -205,18 +207,22 @@ public:
 		}
 		else if (op == '-')
 		{
+			LN* pa = ans;
+			LN* pb = funB;
 			while (pa->next && pb->next)
 			{
+				printf("%d,%d\n", pa->next->coe, pa->next->exp);
 				if (pa->next->exp > pb->next->exp)
 				{
 					LN* pnew = new LN(pb->next->exp, -pb->next->coe);
 					pnew->next = pa->next;
 					pa->next = pnew;
+					pb = pb->next;
 				}
 				else if (pa->next->exp == pb->next->exp)
 				{
 					pa->next->coe -= pb->next->coe;
-					if (pa->next->coe == 0)
+					if (pa->next->coe == 0)//系数减为0则删除
 					{
 						pa->next = pa->next->next;
 					}
@@ -357,23 +363,23 @@ public:
 
 
 /*
+using namespace std;
 int main()
 {
 	char funA[30], funB[30];
 	printf("输入funA:");
-	gets_s(funA);
+	cin>>funA;
 	hhl_function A;
 	A.create_function(funA);
 	A.showall();
 	printf("输入funB:");
-	gets_s(funB);
+	cin>>funB;
 	hhl_function B;
 	B.create_function(funB);
 	B.showall();
-	printf("A+B = ");
-	A.calculate(B.dummyhead, '+');
+	//printf("A+B = ");
+	//A.calculate(B.dummyhead, '+');
 	printf("A-B = ");
 	A.calculate(B.dummyhead, '-');
 	return 0;
-}
-*/
+}*/

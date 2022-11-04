@@ -21,8 +21,7 @@ typedef struct stackNode
 }SN;
 class ChStack_Mazz
 {
-public:
-	
+private:
 	int size = 0;//记录栈中数据数量
 	SN* GetTopPre()//用于pop
 	{
@@ -46,7 +45,7 @@ public:
 		return top;
 	}
 
-
+public:
 	SN* dummyhead = (SN*)malloc(sizeof(SN));//头节点为空
 	ChStack_Mazz()
 	{
@@ -82,7 +81,7 @@ public:
 		free(popnode);
 		size--;
 
-		printf("pop successful\n");
+		//printf("pop successful\n");
 		return num;
 	}
 	void push(SN* p)
@@ -100,7 +99,7 @@ public:
 		top->next = newnode;
 		top = top->next;
 		size++;
-		printf("push successful\n");
+		//printf("push successful\n");
 	}
 	void clear()
 	{
@@ -109,7 +108,7 @@ public:
 			pop();
 		}
 		size = 0;
-		printf("clear successful\n");
+		//printf("clear successful\n");
 	}
 	void destroy()
 	{
@@ -134,7 +133,7 @@ public:
 			p = p->next;
 		}
 	}
-	void onepath(int sx,int sy,int tx,int ty)
+	void onepath(int sx,int sy,int tx,int ty)//只找最优路径，找到一条路径便跳出循环
 	{
 		int flag = 0;//flag==0没找到
 		SN* p = (SN*)malloc(sizeof(SN));
@@ -214,7 +213,7 @@ public:
 				flag++;
 				printf("path %d:\n", flag);
 				showall();
-				printf("get(%d,%d)\n", tx, ty);
+				printf("get to the destination(%d,%d)\n", tx, ty);
 				continue;
 			}
 			if (judge(nx, ny))
@@ -262,72 +261,3 @@ int main()
 	return 0;
 }*/
 
-/*
-//递归方法
-#include<stdio.h>
-#include<stdlib.h>
-int r,c;//迷宫规模
-int start[2],end[2];//起点终点
-char mass[120][120];//初始化迷宫
-int step[4][2]={{1,0},{0,1},{-1,0},{0,-1}};//东南西北
-
-int pos_check(int x,int y)
-{
-	if(x<0||x>r-1||y<0|| y>c-1)return 0;
-	if(mass[x][y]=='.')return 1;
-	else return 0;
-}
-
-int forward(int x,int y)
-{
-	int curx=x,cury=y;
-	for(int i=0;i<4;i++)
-	{
-		curx=x+step[i][0];
-		cury=y+step[i][1];
-		if(curx==end[0] && cury==end[1])
-		{
-			mass[curx][cury]='*';
-			return 1;
-		}
-		if(pos_check(curx,cury))
-		{
-			mass[curx][cury]='*';
-			if(forward(curx,cury))return 1;//试探下一个
-		}
-	}
-	mass[x][y]='o';
-	return 0;
-}
-
-void print_mass()
-{
-	 for (int i=0;i<r;i++)
-	{
-		for (int j=0;j<c;j++)
-		{
-			printf("%c",mass[i][j]);
-			if(j!=c-1)printf(" ");
-		}
-		 if(i!=r-1)printf("\n");
-	}
-}
-
-int main()
-{
-	scanf("%d%d",&r,&c);
-	getchar();
-	for (int i=0;i<r;i++)
-	{
-		for (int j=0;j<c;j++)
-		{
-			mass[i][j]=getchar();
-			getchar();
-		}
-	}
-	scanf("%d%d",&start[0],&start[1]);
-	scanf("%d%d",&end[0],&end[1]);
-	if(forward(start[0],start[1])) print_mass();
-	else printf("None\n");
-}
-*/

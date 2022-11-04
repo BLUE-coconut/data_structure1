@@ -7,13 +7,13 @@
 class Monster
 {
 private:
-	SqStack_char monster;
+	SqQueue_char monster;
 	SqQueue_char ans;
 public:
 
 	void create(char mstr[])
 	{
-		for (int i = strlen(mstr) - 1; i >= 0; i--)
+		for (int i = 0; i < strlen(mstr); i++)
 		{
 			monster.push(mstr[i]);
 		}
@@ -49,41 +49,19 @@ public:
 	//只满足单重括号：
 	void answer(char cur)
 	{
-		if (cur == 'A')
-		{
-			SqQueue_char con;
-			trans(cur, &con);
-			while (!con.empty())
-			{
-				ans.push(con.pop_front());
-			}
-		}
-		else if (cur == 'B')
-		{
-			SqQueue_char con;
-			trans(cur, &con);
-			while (!con.empty())
-			{
-				ans.push(con.pop_front());
-			}
-		}
-		else
-		{
-			ans.push(cur);
-		}
-		printf("answer ok\n");
+		trans(cur, &ans);
 	}
-	void translate()
+	void translate()//使用队列来实现括号内语言的翻译
 	{
 		while (!monster.empty())
 		{
-			char cur = monster.pop();
+			char cur = monster.pop_front();
 			if (cur == '(')
 			{
-				char sigma = monster.pop();
+				char sigma = monster.pop_front();
 				if(sigma==')')continue;
 				SqStack_char tem;
-				cur = monster.pop();
+				cur = monster.pop_front();
 				if (monster.empty())
 				{
 					printf("erro! ) needed\n");
@@ -94,7 +72,7 @@ public:
 				while (cur != ')'&&!monster.empty())
 				{
 					tem.push(cur);
-					cur = monster.pop();
+					cur = monster.pop_front();
 				}
 				while (!tem.empty())
 				{
@@ -113,14 +91,66 @@ public:
 		}
 	}
 
-	//多重括号嵌套已实现：
-	void answer2(char cur, SqQueue_char *subans)
+	//多重括号嵌套（从内往外）：
+	void answer2(char cur, SqQueue_char* subans)//使用双端队列实现
+	{
+		if (cur == '(')
+		{
+			SqQueue_char sigma;
+
+			char cur = monster.pop_front();
+			if (cur != ')')
+			{
+				if (cur == '(')answer2(cur, &sigma);
+				else trans(cur, &sigma);
+				printf("sigma:");
+				sigma.show_queue();
+				printf("\n");
+				SqQueue_char temp;
+				while (!monster.empty())
+				{
+					cur = monster.pop_front();
+					printf("get %c\n", cur);
+					if (cur == ')')break;
+					if (cur == '(')answer2(cur, &temp);
+					else
+					{
+						trans(cur, &temp);
+					}
+				}
+				subans->concat(sigma);
+				while (!temp.empty())
+				{
+					char x= temp.pop_front();
+					subans->push(x);
+					subans->concat(sigma);
+					
+				}
+			}
+
+		}
+		else
+		{
+			subans->push(cur);
+		}
+		printf("subanswer ok\n");
+	}
+	void translate2()
+	{
+		while (!monster.empty())
+		{
+			char cur = monster.pop_front();
+			answer2(cur, &ans);
+		}
+	}
+
+	/*void answer2(char cur, SqQueue_char* subans)
 	{
 		if (cur == '(')
 		{
 			SqQueue_char sigma;
 			
-			char cur = monster.pop();
+			char cur = monster.pop_front();
 			if (cur != ')')
 			{
 				if (cur == '(')answer2(cur, &sigma);
@@ -131,7 +161,7 @@ public:
 				while (!monster.empty())
 				{
 					SqQueue_char temp;
-					cur = monster.pop();
+					cur = monster.pop_front();
 					printf("get %c\n", cur);
 					if (cur == ')')break;
 					if (cur == '(')answer2(cur, &temp);
@@ -154,10 +184,12 @@ public:
 	{
 		while (!monster.empty())
 		{
-			char cur = monster.pop();
+			char cur = monster.pop_front();
 			answer2(cur, &ans);
 		}
 	}
+	*/
+
 	void answer3(char cur, SqQueue_char* subans)
 	{
 		if (cur == '(')
@@ -165,7 +197,7 @@ public:
 			SqQueue_char sigma;
 			SqQueue_char temp;
 
-			char cur = monster.pop();
+			char cur = monster.pop_front();
 			if (cur != ')')
 			{
 				answer3(cur, &sigma);
@@ -174,7 +206,7 @@ public:
 				printf("\n");
 				while (!monster.empty())
 				{
-					cur = monster.pop();
+					cur = monster.pop_front();
 					printf("get %c\n", cur);
 					if (cur == ')')break;
 					answer3(cur, &temp);
@@ -198,8 +230,8 @@ public:
 		SqQueue_char con;
 		while (!monster.empty())
 		{
-			char cur = monster.pop();
-			answer3(cur, &con);
+			char cur = monster.pop_front();
+			answer2(cur, &con);
 		}
 		while (!con.empty())
 		{
@@ -230,25 +262,27 @@ public:
 		}
 	}
 
+	
 	void solve(char mstr[])
 	{
 		
 		create(mstr);
-		translate();//满足括号嵌套
 		//translate();//只满足单一括号
+		translate2();//满足括号嵌套
 		printf("finish！Answer is as follow\n");
 		ans.show_queue();
 		ans.destroy();
 	}
 };
 
-/*
+
 int main()
 {
 	Monster hhlmonster;
+	printf("please input monster's language:\n");
 	char hhls[100];
 	gets_s(hhls);
 	hhlmonster.solve(hhls);
 	return 0;
 }
-*/
+

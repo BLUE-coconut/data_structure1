@@ -305,7 +305,7 @@ bool just_find_set(char* name)
 	if (flag)return true;
 	else return false;
 }
-
+/*
 int main()//交互界面，可建立多个集合
 {
 	hhlSet* S = new hhlSet();
@@ -503,7 +503,7 @@ int main()//交互界面，可建立多个集合
 
 }
 
-/*
+
 int main()//简单的二集合运算(不包含补集求解)
 {
 	char setA[30],setB[30];
