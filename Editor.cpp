@@ -26,11 +26,11 @@ int readline(FILE* fp)//每次读一行
 //实现方式：动态链表+标记所有行首结点指针（用一个链表存），读入时动态分配，输出后释放
 //优点：1、动态分配节省空间；2、链表操作方便；3、存储行首指针定位迅速(没有索引那么方便，但行数在100以内总体效率还是比较高的)
 
-class Editor_String 
+class Editor_String //链式字符串
 {
 private:
     typedef char eletype;
-    typedef struct LinkNode    //使用链表实现
+    typedef struct LinkNode    //使用链表实现链式字符串
     {
         eletype data;
         struct LinkNode* next;
@@ -105,8 +105,40 @@ public:
             pcur->next = pnew;
             pcur = pcur->next;
         }
+        hnew->next = p->next;//插入新行
+        p->next = hnew;
+        len++;
+    }
+    void insert_text_line(int line_id, char in_string[])//插入从终输入的文本
+    {
+        header* p = dummy_of_header;
+        while (line_id--)//找到第line_id行的行首
+        {
+            p = p->next;
+        }
+
+        header* hnew = new header();
+        LN* pcur;//建立新行
+        if (strlen(in_string) > 0)//假如输入字符串为空则插入失败
+        {
+            pcur = new LN(in_string[0]);
+            hnew->line_len = strlen(in_string);
+            hnew->Lhead = pcur;
+        }
+        else
+        {
+            printf("insert empty\n");
+            return;
+        }
+        for (int i = 1; i < strlen(in_string); i++)
+        {
+            LN* pnew = new LN(in_string[i]);
+            pcur->next = pnew;
+            pcur = pcur->next;
+        }
 
         //增加一个换行符
+        hnew->line_len++;
         LN* pnew = new LN('\n');
         pcur->next = pnew;
         pcur = pcur->next;
@@ -145,7 +177,7 @@ public:
             hcur=hcur->next;
         }//找到第id行的前驱hcur
         header* hdel = hcur->next;
-        printf("deling line-%d\n",id);
+        //printf("deling line-%d\n",id);
         show_sigle_line(hdel, id);
         hcur->next = hdel->next;
 
@@ -166,7 +198,7 @@ public:
     {
         for (int i = start; i < end; i++)
         {
-            if (del_single_line(start));
+            if (del_single_line(start))printf("deling line-%d\n", i);
             else
             {
                 printf("del to the end ,%d lines have been deleted\n",i-start);//已经删到底了
@@ -205,12 +237,12 @@ public:
             printf("%c", p->data);
             p = p->next;
         }
-        printf("\n");
+        //printf("\n");
     }
 
     void show_cur_page(int next)//next==1表示显示下一页，next==0表示结束显示(返回初始值)
     {
-        if (next)
+        if (next==1)
         {
             int t = 20;
             int id = cur_id;
@@ -219,7 +251,12 @@ public:
                 show_sigle_line(cur_show->next, ++cur_id);
                 cur_show = cur_show->next;
             }
-            if (!cur_show->next)printf("Active_block end\n");
+            if (!cur_show->next)
+            {
+                printf("\nActive_block end\n");
+                cur_id = 0;
+                cur_show = dummy_of_header;
+            }
         }
         else
         {
@@ -273,6 +310,10 @@ public:
         {
             out_line(outfp);
         }
+    }
+    void init_show()
+    {
+        cur_id = 0;
     }
 
     int length()
@@ -338,11 +379,9 @@ public:
                 break;
             }
             
-            
-        }
-        
+          
+        }        
     }
-
 
     void insert_line(int id,char in_string[])//行插入
     {
@@ -350,12 +389,14 @@ public:
         {
             active.out_line(fp_out);
         }
-        active.insert_line(id, in_string);
+        active.insert_text_line(id, in_string);
     }
+
 
     void del_line(int id)//行删除
     {
         active.del_single_line(id);
+        printf("deling line-%d\n", id);
     }
 
     void del_lines(int start, int end)
@@ -369,15 +410,25 @@ public:
         while (1)
         {
             active.show_cur_page(op);
-            if (op == 0)break;
+            
             printf("是否显示下一页（1是 0否）\n");
             scanf_s("%d", &op);
+            if (op == 0)
+            {
+                active.init_show();
+                break;
+            }
+            else if(op!=1)
+            {
+                printf("输入指令错误，请重新输入\n是否显示下一页（1是 0否）\n");
+                scanf_s("%d", &op);
+            }
         }
     }
 
     void shift()//活区切换
     {
-        active.all_out(fp_out);//输出当前页
+        active.all_out(fp_out);//输出当前活区
         get_in();//读入新页
     }
 
@@ -402,12 +453,20 @@ void get_op(int *op)
     printf("输入操作编号（0-3）:\n");
     scanf_s("%d", op);
 }
-/*
+
 int main()
 {
-    //文件打开
+    //文件打开(默认1.txt为输入文件,2.txt为输出文件)
     char fdir1[50] = "1.txt";
     char fdir2[50] = "2.txt";
+    /*
+    char fdir1[50];
+    char fdir2[50];
+    printf("input file:\n");
+    scanf_s("%s",fdir1);
+    printf("output file:\n");
+    scanf_s("%s",fdir2);
+    */
     FILE* fp1;//输入文件
     FILE* fp2;//输出文件
 
@@ -425,7 +484,7 @@ int main()
         return 0;
     }
 
-    active_block AB(fp1,fp2);
+    active_block AB(fp1,fp2);//实例化时就从文件读入建立了初始的活区
 
     int op = 1;
     while (1)
@@ -462,15 +521,24 @@ int main()
                 scanf_s("%d\n",&id);
                 char in_string[100];
                 gets_s(in_string);
+                //给终端输入的文本增添一个换行符，与文件读入文本进行统一
                 AB.insert_line(id, in_string);
 
             }
             else if (edit == 'd')//行删除
             {
-                int id;
-                scanf_s("%d", &id);
-
-                AB.del_line(id);
+                int st,end=0;
+                scanf_s("%d", &st);
+                if (getchar() != '\n')scanf_s("%d", &end);
+                if ( end == 0 )
+                {
+                    AB.del_line(st);
+                }
+                else
+                {
+                    AB.del_lines(st, end);
+                }
+                
             }
             else if (edit == 'n')//切换活区
             {
@@ -505,4 +573,4 @@ int main()
     fclose(fp2);     //文件关闭
 
     return 0;
-}*/
+}

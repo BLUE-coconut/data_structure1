@@ -275,7 +275,7 @@ public:
 	}
 };
 
-
+/*
 int main()
 {
 	Monster hhlmonster;
@@ -285,4 +285,5 @@ int main()
 	hhlmonster.solve(hhls);
 	return 0;
 }
+*/
 
